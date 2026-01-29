@@ -3,231 +3,862 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NNPTUD-C5 - Danh Sách Sản Phẩm</title>
+    <title>NNPTUD-C5 - Quản Lý Sản Phẩm Chuyên Nghiệp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #764ba2;
+            --success: #48bb78;
+            --warning: #f6ad55;
+            --danger: #f56565;
+            --light: #f7fafc;
+            --dark: #2d3748;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding-top: 0;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 50px 0 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
             padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+            text-align: center;
         }
+
+        .stat-card:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Container */
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
-        header {
+
+        /* Controls */
+        .controls {
             background: white;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            margin-top: -40px;
             margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            animation: slideUp 0.5s ease;
         }
-        h1 {
-            color: #333;
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box input {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .search-box input::placeholder {
+            color: #cbd5e0;
+        }
+
+        /* Buttons */
+        .btn-sort {
+            margin-right: 10px;
             margin-bottom: 10px;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid;
         }
-        .stats {
-            display: flex;
-            gap: 20px;
-            margin-top: 20px;
+
+        .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
         }
-        .stat {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
         }
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
+
+        .btn-outline-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.3);
         }
-        .stat-label {
-            color: #666;
-            font-size: 12px;
+
+        .btn-outline-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .product-card {
+
+        /* Table */
+        .table-responsive {
             background: white;
-            border-radius: 8px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
         }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+
+        table {
+            margin-bottom: 0;
         }
-        .product-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: #f0f0f0;
-        }
-        .product-info {
-            padding: 15px;
-        }
-        .product-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 8px;
-            min-height: 40px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-        .product-category {
-            display: inline-block;
-            background: #667eea;
+
+        table thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            margin-bottom: 10px;
         }
-        .product-description {
-            color: #666;
-            font-size: 12px;
-            line-height: 1.5;
-            margin-bottom: 10px;
-            min-height: 36px;
-            overflow: hidden;
-        }
-        .product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #f0f0f0;
-            padding-top: 10px;
-        }
-        .product-price {
-            font-size: 18px;
-            font-weight: bold;
-            color: #667eea;
-        }
-        .btn-view {
-            background: #667eea;
-            color: white;
+
+        table thead th {
+            padding: 20px;
+            font-weight: 600;
             border: none;
-            padding: 6px 12px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        table tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        table tbody tr:hover {
+            background: #f7fafc;
+            box-shadow: inset 0 0 10px rgba(102, 126, 234, 0.05);
+        }
+
+        table tbody td {
+            padding: 18px 20px;
+            vertical-align: middle;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        table tbody tr:hover .product-image {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 8px 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .product-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 3px;
+        }
+
+        .product-slug {
+            font-size: 0.85rem;
+            color: #a0aec0;
+        }
+
+        .product-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--success) 0%, #38a169 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Deleted product styling */
+        tr.deleted {
+            opacity: 0.7;
+            background-color: #f5e6e6 !important;
+        }
+
+        tr.deleted .product-title,
+        tr.deleted .product-price,
+        tr.deleted .product-slug {
+            text-decoration: line-through;
+            text-decoration-color: #d97706;
+            text-decoration-thickness: 2px;
+        }
+
+        tr.deleted::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background-color: #d97706;
+        }
+
+        .deleted-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background-color: #fed7aa;
+            color: #92400e;
             border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background 0.3s;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 5px;
         }
-        .btn-view:hover {
-            background: #764ba2;
+
+        /* Comments modal */
+        .comments-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
         }
+
+        .comments-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comment-item {
+            background-color: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .comment-text {
+            color: var(--dark);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .comment-actions button {
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
+
+        .comment-form {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f0f4ff;
+            border-radius: 8px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .comment-form button {
+            margin-top: 10px;
+        }
+
+        .comments-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Buttons in table */
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        /* Loading */
         .loading {
             text-align: center;
-            padding: 40px;
-            color: #666;
-            font-size: 16px;
+            padding: 80px 20px;
+            color: var(--dark);
         }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #cbd5e0;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .no-results p {
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+
+        /* Error */
         .error {
-            background: #ffebee;
-            color: #c62828;
+            background: linear-gradient(135deg, #ffeaea 0%, #ffcccb 100%);
+            color: #c53030;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 20px;
+            border-left: 4px solid var(--danger);
+            box-shadow: 0 4px 10px rgba(245, 101, 101, 0.1);
+        }
+
+        /* Modal */
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 15px 15px 0 0;
+            border: none;
+        }
+
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-body img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .controls {
+                padding: 20px;
+            }
+            .btn-sort {
+                width: 100%;
+                margin-bottom: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>NNPTUD-C5 - Danh Sách Sản Phẩm</h1>
-            <p>Quản lý dự án và hiển thị dữ liệu sản phẩm</p>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <h1><i class="fas fa-shopping-bag"></i> NNPTUD-C5</h1>
+            <p>🎯 Nền Tảng Quản Lý Sản Phẩm Chuyên Nghiệp</p>
             <div class="stats">
-                <div class="stat">
+                <div class="stat-card">
+                    <i class="fas fa-box" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <div class="stat-value" id="totalProducts">0</div>
                     <div class="stat-label">Tổng Sản Phẩm</div>
                 </div>
-                <div class="stat">
+                <div class="stat-card">
+                    <i class="fas fa-dollar-sign" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <div class="stat-value" id="totalPrice">$0</div>
                     <div class="stat-label">Tổng Giá Trị</div>
                 </div>
-                <div class="stat">
+                <div class="stat-card">
+                    <i class="fas fa-list" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
                     <div class="stat-value" id="totalCategories">0</div>
                     <div class="stat-label">Danh Mục</div>
                 </div>
+                <div class="stat-card">
+                    <i class="fas fa-eye" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                    <div class="stat-value" id="displayedProducts">0</div>
+                    <div class="stat-label">Đang Hiển Thị</div>
+                </div>
             </div>
-        </header>
-
-        <div id="loading" class="loading">Đang tải dữ liệu...</div>
-        <div id="error"></div>
-        
-        <div id="content" style="display: none;">
-            <div class="products-grid" id="productsContainer"></div>
         </div>
     </div>
 
+    <div class="container mt-4">
+        <div id="error"></div>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <h4>⏳ Đang tải dữ liệu...</h4>
+            <p>Vui lòng chờ một chút</p>
+        </div>
+
+        <div id="content" style="display: none;">
+            <div class="controls">
+                <div class="search-box mb-4">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="form-control form-control-lg" 
+                        placeholder="🔍 Tìm kiếm theo tên sản phẩm..."
+                        onkeyup="handleSearch()"
+                    >
+                </div>
+                <div>
+                    <h6 class="mb-3"><i class="fas fa-sort"></i> Sắp Xếp:</h6>
+                    <button class="btn btn-outline-primary btn-sort" onclick="sortByName('asc')"><i class="fas fa-arrow-up"></i> Tên (A→Z)</button>
+                    <button class="btn btn-outline-primary btn-sort" onclick="sortByName('desc')"><i class="fas fa-arrow-down"></i> Tên (Z→A)</button>
+                    <button class="btn btn-outline-success btn-sort" onclick="sortByPrice('asc')"><i class="fas fa-arrow-up"></i> Giá (Thấp→Cao)</button>
+                    <button class="btn btn-outline-success btn-sort" onclick="sortByPrice('desc')"><i class="fas fa-arrow-down"></i> Giá (Cao→Thấp)</button>
+                    <button class="btn btn-outline-secondary btn-sort" onclick="resetSort()"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-image"></i> Hình</th>
+                            <th><i class="fas fa-cube"></i> Sản Phẩm</th>
+                            <th><i class="fas fa-tag"></i> Danh Mục</th>
+                            <th><i class="fas fa-align-left"></i> Mô Tả</th>
+                            <th><i class="fas fa-dollar-sign"></i> Giá</th>
+                            <th><i class="fas fa-cogs"></i> Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="noResults" class="no-results" style="display: none;">
+                <i class="fas fa-search"></i>
+                <p>❌ Không tìm thấy sản phẩm phù hợp</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let allProducts = [], filteredProducts = [], currentSort = { field: null, order: null };
+        let currentProductId = null;
+
+        window.addEventListener('DOMContentLoaded', loadProducts);
+
         async function loadProducts() {
             try {
-                const response = await fetch('/api/products');
-                if (!response.ok) throw new Error('Lỗi tải dữ liệu');
-                
-                const products = await response.json();
-                
-                if (!products || products.length === 0) {
-                    document.getElementById('loading').innerHTML = 'Không có sản phẩm';
+                const response = await fetch('/api/products-all');
+                if (!response.ok) throw new Error('Lỗi tải dữ liệu từ server');
+                allProducts = await response.json();
+                if (!allProducts || allProducts.length === 0) {
+                    document.getElementById('loading').innerHTML = '❌ Không có sản phẩm';
                     return;
                 }
-                
-                // Tính toán thống kê
-                const totalPrice = products.reduce((sum, p) => sum + (p.price || 0), 0);
-                const categories = [...new Set(products.map(p => p.category?.name))].filter(Boolean);
-                
-                document.getElementById('totalProducts').textContent = products.length;
-                document.getElementById('totalPrice').textContent = '$' + totalPrice.toLocaleString();
-                document.getElementById('totalCategories').textContent = categories.length;
-                
-                // Hiển thị danh sách sản phẩm
-                const container = document.getElementById('productsContainer');
-                container.innerHTML = products.map(product => `
-                    <div class="product-card">
-                        <img src="${product.images?.[0] || 'https://placehold.co/600x400'}" alt="${product.title}" class="product-image">
-                        <div class="product-info">
-                            <div class="product-category">${product.category?.name || 'N/A'}</div>
-                            <div class="product-title">${product.title}</div>
-                            <div class="product-description">${product.description || 'Không có mô tả'}</div>
-                            <div class="product-footer">
-                                <div class="product-price">$${product.price || 0}</div>
-                                <button class="btn-view" onclick="viewProduct(${product.id})">Chi tiết</button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                
+                filteredProducts = [...allProducts];
+                updateStats();
+                renderTable();
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
-                
             } catch (error) {
-                console.error('Lỗi:', error);
-                document.getElementById('error').innerHTML = `<div class="error">Lỗi: ${error.message}</div>`;
+                document.getElementById('error').innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> Lỗi: ${error.message}</div>`;
                 document.getElementById('loading').style.display = 'none';
             }
         }
-        
-        function viewProduct(id) {
-            alert(`Xem chi tiết sản phẩm ID: ${id}`);
+
+        function updateStats() {
+            const activeProducts = allProducts.filter(p => !p.isDeleted);
+            const totalPrice = activeProducts.reduce((sum, p) => sum + (p.price || 0), 0);
+            const categories = [...new Set(activeProducts.map(p => p.category?.name))].filter(Boolean);
+            document.getElementById('totalProducts').textContent = allProducts.length;
+            document.getElementById('totalPrice').textContent = '$' + totalPrice.toLocaleString();
+            document.getElementById('totalCategories').textContent = categories.length;
+            document.getElementById('displayedProducts').textContent = filteredProducts.filter(p => !p.isDeleted).length;
         }
-        
-        // Tải dữ liệu khi trang load
-        window.addEventListener('DOMContentLoaded', loadProducts);
+
+        function handleSearch() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+            filteredProducts = allProducts.filter(p => p.title.toLowerCase().includes(searchValue));
+            if (currentSort.field) applySorting();
+            renderTable();
+            updateStats();
+        }
+
+        function sortByName(order) {
+            currentSort = { field: 'name', order };
+            applySorting();
+            renderTable();
+        }
+
+        function sortByPrice(order) {
+            currentSort = { field: 'price', order };
+            applySorting();
+            renderTable();
+        }
+
+        function applySorting() {
+            if (currentSort.field === 'name') {
+                filteredProducts.sort((a, b) => {
+                    const aVal = a.title.toLowerCase(), bVal = b.title.toLowerCase();
+                    return currentSort.order === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+                });
+            } else if (currentSort.field === 'price') {
+                filteredProducts.sort((a, b) => {
+                    const aVal = a.price || 0, bVal = b.price || 0;
+                    return currentSort.order === 'asc' ? aVal - bVal : bVal - aVal;
+                });
+            }
+        }
+
+        function resetSort() {
+            currentSort = { field: null, order: null };
+            document.getElementById('searchInput').value = '';
+            filteredProducts = [...allProducts];
+            renderTable();
+            updateStats();
+        }
+
+        function renderTable() {
+            const tableBody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+            if (filteredProducts.length === 0) {
+                tableBody.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+            noResults.style.display = 'none';
+            tableBody.innerHTML = filteredProducts.map(p => `
+                <tr ${p.isDeleted ? 'class="deleted"' : ''}>
+                    <td><img src="${p.images?.[0] || 'https://placehold.co/60x60'}" alt="${p.title}" class="product-image" style="${p.isDeleted ? 'opacity: 0.6' : ''}"></td>
+                    <td>
+                        <div class="product-title">${p.title}${p.isDeleted ? '<span class="deleted-badge">Đã xoá</span>' : ''}</div>
+                        <div class="product-slug">${p.slug || 'N/A'}</div>
+                    </td>
+                    <td><span class="category-badge">${p.category?.name || 'N/A'}</span></td>
+                    <td><small>${(p.description || 'Không có mô tả').substring(0, 50)}...</small></td>
+                    <td><div class="product-price">$${p.price || 0}</div></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="viewProduct('${p.id}')"><i class="fas fa-eye"></i> Xem</button>
+                        <button class="btn btn-sm btn-danger ms-2" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i> Xoá</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function viewProduct(id) {
+            const product = allProducts.find(p => String(p.id) === String(id));
+            if (product) {
+                currentProductId = id;
+                const deletedStatus = product.isDeleted ? '<span class="deleted-badge">Đã xoá</span>' : '';
+                document.getElementById('modalTitle').innerHTML = product.title + deletedStatus;
+                let modalContent = `
+                    <img src="${product.images?.[0] || 'https://placehold.co/600x400'}" alt="${product.title}">
+                    <h6><strong>Danh Mục:</strong></h6><p>${product.category?.name || 'N/A'}</p>
+                    <h6><strong>Mô Tả:</strong></h6><p>${product.description || 'Không có mô tả'}</p>
+                    <h6><strong>Giá:</strong></h6><p class="product-price">$${product.price || 0}</p>
+                    <h6><strong>Slug:</strong></h6><p>${product.slug || 'N/A'}</p>
+                    <h6><strong>Ngày Tạo:</strong></h6><p>${new Date(product.creationAt).toLocaleDateString('vi-VN')}</p>
+                    <h6><strong>Trạng thái:</strong></h6><p>${product.isDeleted ? '<span class="badge bg-danger">Đã xoá</span>' : '<span class="badge bg-success">Hoạt động</span>'}</p>
+                `;
+                
+                // Add comments section
+                modalContent += await getCommentsHTML(id);
+                
+                document.getElementById('modalBody').innerHTML = modalContent;
+                new bootstrap.Modal(document.getElementById('productModal')).show();
+                loadComments(id);
+            }
+        }
+
+        async function getCommentsHTML(productId) {
+            return `
+                <div class="comments-section">
+                    <h6 class="comments-title">
+                        <i class="fas fa-comments"></i> Bình Luận
+                    </h6>
+                    <div class="comments-list" id="commentsList"></div>
+                    <div class="comment-form">
+                        <textarea id="commentText" placeholder="Nhập bình luận..." maxlength="500"></textarea>
+                        <button class="btn btn-sm btn-primary" onclick="addComment('${productId}')">
+                            <i class="fas fa-paper-plane"></i> Bình Luận
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadComments(productId) {
+            try {
+                const response = await fetch(`/api/products/${productId}/comments`);
+                if (!response.ok) throw new Error('Lỗi tải comments');
+                const comments = await response.json();
+                const commentsList = document.getElementById('commentsList');
+                
+                if (comments.length === 0) {
+                    commentsList.innerHTML = '<p class="text-muted text-center">Chưa có bình luận</p>';
+                    return;
+                }
+                
+                commentsList.innerHTML = comments.map(c => `
+                    <div class="comment-item">
+                        <div class="comment-text">${c.text}</div>
+                        <small class="text-muted">${new Date(c.createdAt || c.id).toLocaleDateString('vi-VN')}</small>
+                        <div class="comment-actions">
+                            <button class="btn btn-sm btn-warning" onclick="editComment('${c.id}', '${productId}', '${c.text.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-edit"></i> Sửa
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteComment('${c.id}', '${productId}')">
+                                <i class="fas fa-trash"></i> Xoá
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Lỗi:', error);
+                document.getElementById('commentsList').innerHTML = '<p class="text-danger">Lỗi tải bình luận</p>';
+            }
+        }
+
+        async function addComment(productId) {
+            const text = document.getElementById('commentText').value.trim();
+            if (!text) {
+                alert('Vui lòng nhập bình luận');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/products/${productId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                
+                if (response.ok) {
+                    document.getElementById('commentText').value = '';
+                    loadComments(productId);
+                } else {
+                    alert('Lỗi khi thêm bình luận');
+                }
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+        async function editComment(commentId, productId, oldText) {
+            const newText = prompt('Chỉnh sửa bình luận:', oldText);
+            if (newText === null || newText.trim() === '') return;
+            
+            try {
+                const response = await fetch(`/api/comments/${commentId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: newText.trim() })
+                });
+                
+                if (response.ok) {
+                    loadComments(productId);
+                } else {
+                    alert('Lỗi khi cập nhật bình luận');
+                }
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+        async function deleteComment(commentId, productId) {
+            if (!confirm('Bạn chắc chắn muốn xoá bình luận?')) return;
+            
+            try {
+                const response = await fetch(`/api/comments/${commentId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadComments(productId);
+                } else {
+                    alert('Lỗi khi xoá bình luận');
+                }
+            } catch (error) {
+                alert('Lỗi: ' + error.message);
+            }
+        }
+
+        async function deleteProduct(id) {
+            if (!confirm('⚠️ Bạn chắc chắn muốn xoá sản phẩm này?')) return;
+            try {
+                const response = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('✅ Sản phẩm đã bị xoá thành công');
+                    loadProducts();
+                } else {
+                    alert('❌ Lỗi khi xoá sản phẩm');
+                }
+            } catch (error) {
+                alert('❌ Lỗi: ' + error.message);
+            }
+        }
     </script>
 </body>
 </html>
